@@ -40,6 +40,42 @@ EditText client_id,name,email,phone,company,work,material,specified,sample;
         specified=findViewById(R.id.specified);
         sample=findViewById(R.id.sample);
         findViewById(R.id.save).setOnClickListener(v -> {
+            if(client_id.getText().toString().equals("")){
+                client_id.setError("Can't be empty");
+                return;
+            }
+            if(name.getText().toString().equals("")){
+                name.setError("Can't be empty");
+                return;
+            }
+            if(email.getText().toString().equals("")){
+                email.setError("Can't be empty");
+                return;
+            }
+            if(phone.getText().toString().equals("")){
+                phone.setError("Can't be empty");
+                return;
+            }
+            if(company.getText().toString().equals("")){
+                company.setError("Can't be empty");
+                return;
+            }
+            if(work.getText().toString().equals("")){
+                work.setError("Can't be empty");
+                return;
+            }
+            if(material.getText().toString().equals("")){
+                material.setError("Can't be empty");
+                return;
+            }
+            if(specified.getText().toString().equals("")){
+                specified.setError("Can't be empty");
+                return;
+            }
+            if(sample.getText().toString().equals("")){
+                company.setError("Can't be empty");
+                return;
+            }
 
 
 

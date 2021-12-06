@@ -88,8 +88,13 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
         bottomNavigationView.setBackground(null);
         bottomNavigationView.getMenu().getItem(1).setEnabled(false);
         findViewById(R.id.fab_add_transaction).setOnClickListener(v -> {
-            startActivity(new Intent(this, AddExperiment.class));
-        });
+            if(!sharedPref.getChoice().equals("")) {
+                startActivity(new Intent(this, AddExperiment.class));
+            }
+            else {
+                showGetClient();
+            }
+            });
         showGetClient();
 
     }
@@ -229,7 +234,8 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
     }
     @Override
     protected void onResume() {
-        loadFragment(new HomeFragment());
+        bottomNavigationView.setSelectedItemId(0);
+//        loadFragment(new HomeFragment());
 
         super.onResume();
     }
@@ -367,6 +373,5 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
     }
 }

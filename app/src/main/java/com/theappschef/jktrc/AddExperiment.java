@@ -39,6 +39,24 @@ public class AddExperiment extends AppCompatActivity {
         status=findViewById(R.id.status);
         sharedPref=new SharedPref(this);
         findViewById(R.id.save).setOnClickListener(v -> {
+            if(material.getText().toString().equals("")){
+                material.setError("Can't be empty");
+                return;
+            }
+            if(testName.getText().toString().equals("")){
+                testName.setError("Can't be empty");
+                return;
+            }
+            if(testPerformed.getText().toString().equals("")){
+                testPerformed.setError("Can't be empty");
+                return;
+            }
+            if(status.getText().toString().equals("")){
+                status.setError("Can't be empty");
+                return;
+            }
+
+
             try {
                 upload();
             } catch (MalformedURLException e) {
