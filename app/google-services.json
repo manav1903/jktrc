@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "129861424287",
+    "project_id": "jktrc-47abd",
+    "storage_bucket": "jktrc-47abd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129861424287:android:a62b17b60c962c9c853eaa",
+        "android_client_info": {
+          "package_name": "com.theappschef.jktrc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129861424287-e4dftrjtsigv2o8bk1chkv0d4f8mtccj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2DswngJKWqWyBGoA8ijXq0LO0e_RlBhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129861424287-e4dftrjtsigv2o8bk1chkv0d4f8mtccj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
