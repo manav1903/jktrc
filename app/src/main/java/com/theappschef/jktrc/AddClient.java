@@ -9,6 +9,9 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,7 @@ import okhttp3.Response;
 
 public class AddClient extends AppCompatActivity {
 EditText client_id,name,email,phone,company,work,material,specified,sample;
+    private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +84,7 @@ EditText client_id,name,email,phone,company,work,material,specified,sample;
 
 
             try {
+
                 upload();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -124,6 +129,8 @@ EditText client_id,name,email,phone,company,work,material,specified,sample;
                             if (response.isSuccessful()) {
                                 Log.d("tag",response.body().string());
                                 mHandler.post(() ->{
+                                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                                    mDatabase.child("Idlist").child(client_id.getText().toString()).setValue("true");
                                     Toast.makeText(AddClient.this,"Success",Toast.LENGTH_SHORT).show();
                                     finish();
                                 });

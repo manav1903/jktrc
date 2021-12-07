@@ -18,17 +18,44 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class LoginActivity extends AppCompatActivity {
+import okhttp3.internal.cache.DiskLruCache;
 
+public class LoginActivity extends AppCompatActivity {
+    private DatabaseReference mDatabase;
     EditText phone,otp;
+    ArrayList<String> a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         phone=findViewById(R.id.phone);
+
+        a=new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("AuthUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot s:snapshot.getChildren()) {
+                    a.add(s.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()!=null){
@@ -36,6 +63,17 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         findViewById(R.id.send_otp).setOnClickListener(v -> {
+
+            if(a.size()==0){
+
+                Toast.makeText(this, "Please wait while we fetch auth user list", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(!a.contains(phone.getText().toString())||phone.getText().length()!=10){
+                Toast.makeText(this, "Incorrect phone number or Not authorized", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (phone.getText().toString().length()==10&&!op) {
                 verifyNumber(phone.getText().toString(), otp_being_retrived);
             }
@@ -45,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             else {
                 Toast.makeText(this, "Please Enter a valid number", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         otp=findViewById(R.id.otp);

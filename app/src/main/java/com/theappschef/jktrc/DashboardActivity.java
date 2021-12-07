@@ -31,6 +31,11 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +65,7 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
     BottomNavigationView bottomNavigationView;
     SharedPref sharedPref;
     Fragment fragmentTop;
+    ArrayList<String> arrayList;
     public JSONArray jsonArrayTests;
     public ArrayList<ArrayList<String>> testList;
 
@@ -70,6 +76,8 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
 //        if (getSupportActionBar() != null) {
 //            getSupportActionBar().hide();
 //        }
+
+       func();
         testList = new ArrayList<>();
         sharedPref = new SharedPref(this);
         loadFragment(new HomeFragment());
@@ -99,6 +107,24 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
 
     }
 
+    public void func(){
+        arrayList=new ArrayList<>();
+        DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Idlist").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot s:snapshot.getChildren()) {
+                    arrayList.add(s.getKey());
+                    Log.d("tag",s.getKey());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     @Override
     public void onLocationChanged(@NonNull Location location) {
         LatLng locationLatLong;
@@ -191,8 +217,11 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
         dialog.findViewById(R.id.select).setOnClickListener(v -> {
             if (editText.getText().toString().equals("")) {
                 editText.setError("Enter a client id to proceed");
-
-            } else {
+            }
+            else if(!arrayList.contains(editText.getText().toString())){
+                Toast.makeText(this,"Client doesn't exist",Toast.LENGTH_SHORT).show();
+            }
+            else {
                 sharedPref.setChoice(editText.getText().toString());
                 try {
                     upload();
@@ -220,7 +249,8 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
             JSONObject jsonObject2 = new JSONObject();
             try {
 
-                jsonObject2.put("material",testList.get(position).get(0));
+
+            jsonObject2.put("material",testList.get(position).get(0));
             jsonObject2.put("testName",testList.get(position).get(1));
             jsonObject2.put("testPerformed",testList.get(position).get(2));
             jsonObject2.put("status",s[0]);
@@ -234,9 +264,9 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
     }
     @Override
     protected void onResume() {
+        func();
         bottomNavigationView.setSelectedItemId(0);
-//        loadFragment(new HomeFragment());
-
+        loadFragment(new HomeFragment());
         super.onResume();
     }
 
@@ -296,6 +326,7 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
 
     void upload() throws MalformedURLException {
         testList.clear();
+
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("client_id", sharedPref.getChoice());
@@ -318,6 +349,8 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
                                     JSONObject jsonObject1 = new JSONObject(response.body().string());
 
                                     if (!jsonObject1.getString("client_id").equals(sharedPref.getChoice())) {
+                                        jsonArrayTests = null;
+
                                         mHandler.post(() -> {
                                             Toast.makeText(DashboardActivity.this, "No Existing Tests", Toast.LENGTH_SHORT).show();
                                             if (fragmentTop instanceof HomeFragment) {
